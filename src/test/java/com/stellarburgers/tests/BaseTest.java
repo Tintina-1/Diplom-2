@@ -68,7 +68,6 @@ public abstract class BaseTest {
                 .post("/auth/register");
 
         authToken = response.jsonPath().getString("accessToken");
-        System.out.println("Auth Token: " + authToken);
         response.then().statusCode(200);
 
     }
