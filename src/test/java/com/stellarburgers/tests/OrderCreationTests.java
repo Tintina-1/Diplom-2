@@ -73,10 +73,8 @@ public class OrderCreationTests extends BaseTest {
                 .header("Content-Type", "application/json")
                 .header("Authorization", authToken)
                 .body(String.format("{\"ingredients\": [\"%s\"]}", ingredients[0]))
-                .log().all()
                 .post("/orders");
 
-        response.then().log().all();
         response.then().statusCode(200)
                 .body("success", equalTo(true))
                 .body("order.ingredients.size()",equalTo(1))
