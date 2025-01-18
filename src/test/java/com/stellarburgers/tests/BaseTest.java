@@ -86,7 +86,7 @@ public abstract class BaseTest {
                 .header("Authorization", authToken)
                 .header("Accept", "application/json")
                 .delete("/auth/user");
-        response.then().log().all();
+
         response.then().statusCode(202);
     }
 }
