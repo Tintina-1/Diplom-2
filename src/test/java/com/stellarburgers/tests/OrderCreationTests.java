@@ -5,8 +5,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class OrderCreationTests extends BaseTest {
 
@@ -54,7 +56,35 @@ public class OrderCreationTests extends BaseTest {
 
         response.then().statusCode(200)
                 .body("success", equalTo(true))
+                .body("order.ingredients.size()",equalTo(2))
                 .body("order.number", notNullValue());
+
+        List<String> ingredientIdsFromResponse = response.jsonPath().getList("order.ingredients._id");
+
+        assertThat("Идентификаторы ингредиентов не совпадают", ingredientIdsFromResponse, containsInAnyOrder(ingredients));
+    }
+
+    @Test
+    @Step("Тест: создание заказа с одним корректным ингредиентом")
+    public void createOrderWithOneValidIngredientSuccess() {
+        String[] ingredients = {"61c0c5a71d1f82001bdaaa70"};
+
+        Response response = RestAssured.given()
+                .header("Content-Type", "application/json")
+                .header("Authorization", authToken)
+                .body(String.format("{\"ingredients\": [\"%s\"]}", ingredients[0]))
+                .log().all()
+                .post("/orders");
+
+        response.then().log().all();
+        response.then().statusCode(200)
+                .body("success", equalTo(true))
+                .body("order.ingredients.size()",equalTo(1))
+                .body("order.number", notNullValue());
+
+        List<String> ingredientIdsFromResponse = response.jsonPath().getList("order.ingredients._id");
+
+        assertThat("Идентификаторы ингредиентов не совпадают", ingredientIdsFromResponse, containsInAnyOrder(ingredients));
     }
 
     @Test
