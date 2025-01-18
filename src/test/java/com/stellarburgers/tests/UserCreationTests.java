@@ -42,8 +42,8 @@ public class UserCreationTests extends BaseTest {
     }
 
     @Test
-    @Step("Тест: создание пользователя без обязательного поля")
-    public void createUserWithoutRequiredFieldFailure() {
+    @Step("Тест: создание пользователя без имени")
+    public void createUserWithoutNameFailure() {
         Response response = RestAssured.given()
                 .header("Content-Type", "application/json")
                 .body(String.format("{\"email\": \"%s\", \"password\": \"%s\"}", testEmail, testPassword))
@@ -53,6 +53,33 @@ public class UserCreationTests extends BaseTest {
                 .body("success", equalTo(false))
                 .body("message", equalTo("Email, password and name are required fields"));
 
-        shouldDeleteUser = false;
+    }
+
+    @Test
+    @Step("Тест: создание пользователя без электронной почты")
+    public void createUserWithoutEmailFailure() {
+        Response response = RestAssured.given()
+                .header("Content-Type", "application/json")
+                .body(String.format("{\"name\": \"%s\", \"password\": \"%s\"}", testName, testPassword))
+                .post("/auth/register");
+
+        response.then().statusCode(403)
+                .body("success", equalTo(false))
+                .body("message", equalTo("Email, password and name are required fields"));
+
+    }
+
+    @Test
+    @Step("Тест: создание пользователя без пароля")
+    public void createUserWithoutPasswordFailure() {
+        Response response = RestAssured.given()
+                .header("Content-Type", "application/json")
+                .body(String.format("{\"email\": \"%s\", \"name\": \"%s\"}", testEmail, testName))
+                .post("/auth/register");
+
+        response.then().statusCode(403)
+                .body("success", equalTo(false))
+                .body("message", equalTo("Email, password and name are required fields"));
+
     }
 }

@@ -14,7 +14,6 @@ public abstract class BaseTest {
     protected String testPassword = "TestPassword123";
     protected String testName;
     protected String authToken;
-    protected boolean shouldDeleteUser = true;
     protected boolean skipSetUp = false;
 
     @Before
@@ -27,9 +26,7 @@ public abstract class BaseTest {
 
     @After
     public void tearDown() {
-        if (shouldDeleteUser) {
             deleteTestUser();
-        }
     }
 
     @Step("Генерация случайного email")
@@ -89,7 +86,7 @@ public abstract class BaseTest {
                 .header("Authorization", authToken)
                 .header("Accept", "application/json")
                 .delete("/auth/user");
-
+        response.then().log().all();
         response.then().statusCode(202);
     }
 }
