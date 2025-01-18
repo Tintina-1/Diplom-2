@@ -88,9 +88,8 @@ public abstract class BaseTest {
         Response response = RestAssured.given()
                 .header("Authorization", authToken)
                 .header("Accept", "application/json")
-                .log().all()
                 .delete("/auth/user");
+
         response.then().statusCode(202);
-        response.then().log().all();
     }
 }
